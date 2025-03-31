@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import '../styles/global.css'; // Если используешь глобальные стили
 import 'leaflet/dist/leaflet.css';
+import QueryProvider from '@/components/QueryProvider';
 
 export const metadata = {
   title: 'Поиск спортивных клубов в Тюмени',
@@ -11,9 +11,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru">
       <body>
-        <header>Навигация</header>
-        <main>{children}</main>
-        <footer>© 2025</footer>
+        <QueryProvider>
+          <header>Навигация</header>
+          <main>{children}</main>
+          <footer>© 2025</footer>
+        </QueryProvider>
       </body>
     </html>
   );
