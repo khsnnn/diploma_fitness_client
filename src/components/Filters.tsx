@@ -3,7 +3,7 @@
 import { useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import type { Filters } from '@/types/filters';
-import { allClusters } from '@/types/filters';
+import { allCategories } from '@/types/filters';
 
 interface FiltersProps {
   onFilterChange: (filters: Filters) => void;
@@ -13,7 +13,6 @@ const FiltersContainer = styled.div`
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 8px;
-  margin-bottom: 20px;
 `;
 
 const Label = styled.label`
@@ -36,14 +35,14 @@ const RangeInput = styled.input`
 
 export default function Filters({ onFilterChange }: FiltersProps) {
   const [filters, setFilters] = useState<Filters>({
-    rating: 3.0,
+    min_rating: 0,
     distance: 10,
-    clusters: [],
+    categories: [],
   });
 
   const handleRatingChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newRating = parseFloat(e.target.value);
-    const updatedFilters = { ...filters, rating: newRating };
+    const updatedFilters = { ...filters, min_rating: newRating };
     setFilters(updatedFilters);
     onFilterChange(updatedFilters);
   };
@@ -55,9 +54,9 @@ export default function Filters({ onFilterChange }: FiltersProps) {
     onFilterChange(updatedFilters);
   };
 
-  const handleClustersChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoriesChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
-    const updatedFilters = { ...filters, clusters: selectedOptions };
+    const updatedFilters = { ...filters, categories: selectedOptions };
     setFilters(updatedFilters);
     onFilterChange(updatedFilters);
   };
@@ -65,13 +64,13 @@ export default function Filters({ onFilterChange }: FiltersProps) {
   return (
     <FiltersContainer>
       <Label>
-        Минимальный рейтинг: {filters.rating}
+        Минимальный рейтинг: {filters.min_rating || 'Любой'}
         <RangeInput
           type="range"
           min="0"
           max="5"
           step="0.1"
-          value={filters.rating}
+          value={filters.min_rating || 0}
           onChange={handleRatingChange}
         />
       </Label>
@@ -80,8 +79,8 @@ export default function Filters({ onFilterChange }: FiltersProps) {
         Максимальное расстояние (км): {filters.distance}
         <RangeInput
           type="range"
-          min="0"
-          max="10"
+          min="1"
+          max="15"
           step="1"
           value={filters.distance}
           onChange={handleDistanceChange}
@@ -92,12 +91,12 @@ export default function Filters({ onFilterChange }: FiltersProps) {
         Категории услуг:
         <Select
           multiple
-          value={filters.clusters}
-          onChange={handleClustersChange}
+          value={filters.categories || []}
+          onChange={handleCategoriesChange}
         >
-          {allClusters.map((cluster) => (
-            <option key={cluster} value={cluster}>
-              {cluster}
+          {allCategories.map((category) => (
+            <option key={category} value={category}>
+              {category}
             </option>
           ))}
         </Select>

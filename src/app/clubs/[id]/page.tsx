@@ -1,19 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import styled from 'styled-components';
 import { Club } from '@/types/club';
-import { WebSocketClient } from '@/lib/websocket';
-
-async function fetchClub(id: string): Promise<Club> {
-  const response = await fetch(`http://localhost:8080/api/clubs/${id}`);
-  if (!response.ok) {
-    throw new Error('Ошибка при загрузке клуба');
-  }
-  return response.json();
-}
+import { fetchClub } from '@/lib/api';
 
 const ClubContainer = styled.div`
   padding: 20px;
@@ -34,27 +25,25 @@ const ClubDetail = styled.p`
   font-size: 1.1em;
 `;
 
+const ScheduleList = styled.ul`
+  list-style: none;
+  padding: 0;
+`;
+
+const ScheduleItem = styled.li`
+  margin: 5px 0;
+`;
+
 export default function ClubPage() {
   const params = useParams();
   const id = params.id as string;
-  const queryClient = useQueryClient();
 
   const { data: club, isLoading, error } = useQuery<Club>({
     queryKey: ['club', id],
     queryFn: () => fetchClub(id),
   });
 
-  useEffect(() => {
-    const wsClient = new WebSocketClient('ws://localhost:8080/ws');
-    wsClient.connect((data) => {
-      if (data.clubId === parseInt(id)) {
-        queryClient.setQueryData<Club>(['club', id], (oldClub) =>
-          oldClub ? { ...oldClub, status: data.status } : oldClub
-        );
-      }
-    });
-    return () => wsClient.disconnect();
-  }, [queryClient, id]);
+  console.log('Club data:', club); // Отладка
 
   if (isLoading) return <div>Загрузка...</div>;
   if (error) return <div>Ошибка: {(error as Error).message}</div>;
@@ -64,10 +53,23 @@ export default function ClubPage() {
     <ClubContainer>
       <ClubTitle>{club.name}</ClubTitle>
       <ClubDetail>Адрес: {club.address}</ClubDetail>
+      <ClubDetail>Описание: {club.description}</ClubDetail>
+      <ClubDetail>Часы работы: {club.working_hours}</ClubDetail>
       <ClubDetail>Рейтинг: {club.rating}</ClubDetail>
-      <ClubDetail>Статус: {club.status === 'open' ? 'Открыт' : 'Закрыт'}</ClubDetail>
-      <ClubDetail>Расписание: {club.schedule}</ClubDetail>
-      <ClubDetail>Категории: {club.clusters.join(', ')}</ClubDetail>
+      <ClubDetail>Статус: {club.status === 'active' ? 'Открыт' : 'Закрыт'}</ClubDetail>
+      <ClubDetail>
+        Категории: {(club.categories || []).map((cat) => cat.name).join(', ') || 'Нет категорий'}
+      </ClubDetail>
+      <ClubDetail>
+        Расписание:
+        <ScheduleList>
+          {(club.schedules || []).map((schedule) => (
+            <ScheduleItem key={schedule.id}>
+              {schedule.day}: {schedule.time} - {schedule.activity} ({schedule.instructor})
+            </ScheduleItem>
+          )) || 'Нет расписания'}
+        </ScheduleList>
+      </ClubDetail>
     </ClubContainer>
   );
 }

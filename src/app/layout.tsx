@@ -12,9 +12,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ru">
       <body>
         <QueryProvider>
-          <header>Навигация</header>
+          {/* <header>Навигация</header> */}
           <main>{children}</main>
-          <footer>© 2025</footer>
+          {/* <footer>© 2025</footer> */}
         </QueryProvider>
       </body>
     </html>

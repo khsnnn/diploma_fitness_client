@@ -9,7 +9,6 @@ interface ClubListProps {
 }
 
 const ListContainer = styled.div`
-  margin-top: 20px;
   max-height: 300px;
   overflow-y: auto;
   border: 1px solid #ddd;
@@ -48,7 +47,7 @@ export default function ClubList({ clubs }: ClubListProps) {
           </ClubName>
           <ClubInfo>
             <span>Рейтинг: {club.rating}</span>
-            <span>{club.status === 'open' ? 'Открыт' : 'Закрыт'}</span>
+            <span>{club.status === 'active' ? 'Открыт' : 'Закрыт'}</span>
           </ClubInfo>
         </ClubItem>
       ))}
