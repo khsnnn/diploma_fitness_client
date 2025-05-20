@@ -52,7 +52,7 @@ export default function ClubPage() {
   return (
     <ClubContainer>
       <ClubTitle>{club.name}</ClubTitle>
-      <ClubDetail>Адрес: {club.address}</ClubDetail>
+      <ClubDetail>Адрес: {club.address.slice(0, -1)}</ClubDetail>
       <ClubDetail>Описание: {club.description}</ClubDetail>
       <ClubDetail>Часы работы: {club.working_hours}</ClubDetail>
       <ClubDetail>Рейтинг: {club.rating}</ClubDetail>

@@ -111,16 +111,16 @@ const SectionTitle = styled.h2`
 
 const ClubCard = styled.div`
   padding: 15px;
-  border: 1px solid #eee;
+  border: 3px solid #eee;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 1px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
 const ClubLink = styled(Link)`
-  color: #0070f3;
+  color: #02162e;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
@@ -260,7 +260,7 @@ export default function Home() {
           <option value="rating">Сортировать по рейтингу</option>
         </SortSelect>
 
-        <SectionTitle>Клубы ({sortedClubs?.length || 0})</SectionTitle>
+        {/* <SectionTitle>Клубы ({sortedClubs?.length || 0})</SectionTitle> */}
         {sortedClubs?.map((club) => (
           <ClubCard key={club.id}>
             <ClubLink href={`/clubs/${club.id}`}>
@@ -272,7 +272,7 @@ export default function Home() {
       </LeftColumn>
 
       <RightColumn>
-        <Map clubs={sortedClubs || []} center={[userLocation.lat, userLocation.lng]} />
+        <Map clubs={sortedClubs || []} center={[userLocation.lat, userLocation.lng]} userLocation={userLocation} />
       </RightColumn>
     </HomeContainer>
   );
